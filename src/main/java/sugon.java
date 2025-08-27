@@ -8,27 +8,41 @@ public class Sugon {
         System.out.println(" Hello! I'm " + chatName);
         System.out.println(" What can I do for you?");
         System.out.println("____________________________________________________________");
-        String line;
         Scanner s = new Scanner(System.in);
-        ArrayList<String> list_of_commands = new ArrayList<>();
+        ArrayList<Task> list_of_Tasks = new ArrayList<>();
 
         while (true) {
-            line = s.nextLine();
-            if (line.equals("bye"))
-            {
+            String line = s.nextLine();
+            if (line.equals("bye")){
                 break;
-            }
-            else if (line.equals("list")){
+            } else if (line.equals("list")){
                 System.out.println("____________________________________________________________");
-                for (int i = 0; i < list_of_commands.size(); i++){
-
-                    System.out.println((i+1) + ". " + list_of_commands.get(i));
+                for (int i = 0; i < list_of_Tasks.size(); i++){
+                    Task t = list_of_Tasks.get(i);
+                    System.out.println((i + 1) + ". [" + t.getStatusIcon() + "] " + t.description);
                 }
                 System.out.println("____________________________________________________________");
 
-            }
-            else {
-                list_of_commands.add(line);
+            } else if (line.startsWith("mark ")) {
+                int idx = Integer.parseInt(line.split(" ")[1]) - 1;
+                if (idx >= 0 && idx < list_of_Tasks.size()) {
+                    list_of_Tasks.get(idx).isDone = true;
+                    System.out.println("____________________________________________________________");
+                    System.out.println("Marked task " + (idx + 1) + " as done:");
+                    System.out.println("[" + list_of_Tasks.get(idx).getStatusIcon() + "] " + list_of_Tasks.get(idx).description);
+                    System.out.println("____________________________________________________________");
+                }
+            } else if (line.startsWith("unmark ")) {
+                int idx = Integer.parseInt(line.split(" ")[1]) - 1;
+                if (idx >= 0 && idx < list_of_Tasks.size()) {
+                    list_of_Tasks.get(idx).isDone = false;
+                    System.out.println("____________________________________________________________");
+                    System.out.println("Unmarked task " + (idx + 1) + " as done.");
+                    System.out.println("[" + list_of_Tasks.get(idx).getStatusIcon() + "] " + list_of_Tasks.get(idx).description);
+                    System.out.println("____________________________________________________________");
+                }
+            } else {
+                list_of_Tasks.add(new Task(line));
                 System.out.println("____________________________________________________________");
                 System.out.println("Added: " + line);
                 System.out.println("____________________________________________________________");
