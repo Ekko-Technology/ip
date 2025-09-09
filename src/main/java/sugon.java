@@ -2,6 +2,14 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Sugon {
+    // String... is a varargs where a value of that type can be passed as many times and the caller gets it as an array
+    private static void sugonPrint(String... messages) {
+        System.out.println("____________________________________________________________");
+    for (String msg : messages) {
+        System.out.println(msg);
+    }
+    System.out.println("____________________________________________________________");
+    }
     public static void main(String[] args) {
         String chatName = "Sugon";
         System.out.println("____________________________________________________________");
@@ -14,21 +22,16 @@ public class Sugon {
 
         while (isRunning) {
             String line = s.nextLine().trim();
-            if (line.isEmpty()) {
-                System.out.println("____________________________________________________________");
-                System.out.println("Sugon needs a command.");
-                System.out.println("____________________________________________________________");
-                break;
-            }
             String[] words = line.split(" ", 2);
             String first_word = words[0].toLowerCase();
 
             switch (first_word) {
+            case "":
+                sugonPrint("Sugon needs a command.");
+                break;
             case "bye":
                 isRunning = false;
-                System.out.println("____________________________________________________________");
-                System.out.println("Bye. Hope to see you again soon!");
-                System.out.println("____________________________________________________________");
+                sugonPrint("Bye. Hope to see you again soon!");
                 break;
             case "list":
                 System.out.println("____________________________________________________________");
@@ -41,16 +44,12 @@ public class Sugon {
             case "mark":
             case "unmark":
                 if (words.length < 2) {
-                System.out.println("____________________________________________________________");
-                System.out.println("Sugon needs your task number to " + first_word + ".");
-                System.out.println("____________________________________________________________");
-                break;
+                    sugonPrint("Sugon needs your task number to " + first_word + ".");
+                    break;
                 }
                 int idx = Integer.parseInt(line.split(" ")[1]) - 1;
                 if (idx < 0 || idx >= list_of_Tasks.size()) {
-                    System.out.println("____________________________________________________________");
-                    System.out.println("Invalid task number.");
-                    System.out.println("____________________________________________________________");
+                    sugonPrint("Invalid task number.");
                     break;
                 }
                 // condition that sets isDone to True or False based on first_word string
@@ -65,9 +64,7 @@ public class Sugon {
             case "deadline":
             case "event":
                 if (words.length < 2 || words[1].trim().isEmpty()) {
-                    System.out.println("____________________________________________________________");
-                    System.out.println("Sugon Demands a description after your silly command");
-                    System.out.println("____________________________________________________________");
+                    sugonPrint("Sugon demands a description after your silly command");
                     break;
                 }
 
@@ -90,9 +87,7 @@ public class Sugon {
                         newTask = new Event(actual_task, startTime, endTime);
                     } 
                 } catch (Exception e) {
-                    System.out.println("____________________________________________________________");
-                    System.out.println("Invalid format for " + first_word + ". Sugon suggests you double check your input formatting properly.");
-                    System.out.println("____________________________________________________________");
+                    sugonPrint("Invalid format for " + first_word + ". Sugon suggests you double check your input formatting properly.");
                     continue;
                 }
 
@@ -106,9 +101,7 @@ public class Sugon {
                 break;
 
             default:
-                System.out.println("____________________________________________________________");
-                System.out.println("Sorry your command is beyond Sugon's Dictionary");
-                System.out.println("____________________________________________________________");
+                sugonPrint("Sorry your command is beyond Sugon's Dictionary");
                 break;
             }
         }
