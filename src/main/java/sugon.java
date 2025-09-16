@@ -100,6 +100,32 @@ public class Sugon {
                 System.out.println("____________________________________________________________");
                 break;
 
+            case "delete":
+                if (words.length < 2) {
+                    sugonPrint("Sugon needs your task number to delete");
+                    break;
+                }
+                int idx_to_delete;
+                try {
+                    idx_to_delete = Integer.parseInt(words[1].trim()) - 1;
+             } catch (NumberFormatException e) {
+                    sugonPrint("Sugon needs a valid task number to delete.");
+                    break;
+                }
+
+                if (idx_to_delete < 0 || idx_to_delete >= list_of_Tasks.size()) {
+                    sugonPrint("Invalid task number.");
+                    break;
+                }
+                Task removedTask = list_of_Tasks.remove(idx_to_delete);
+                System.out.println("____________________________________________________________");
+                System.out.println("Noted. I've removed this task:");
+                System.out.println("  " + removedTask.toString());
+                System.out.println("Now you have " + list_of_Tasks.size() +
+                        (list_of_Tasks.size() == 1 ? " task" : " tasks") + " in the list.");
+                System.out.println("____________________________________________________________");
+                break;   
+
             default:
                 sugonPrint("Sorry your command is beyond Sugon's Dictionary");
                 break;
