@@ -1,14 +1,94 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Sugon {
+
+    private static String DATAPATH = "data/Sugon.txt";
+
+    private static void saveTasks(ArrayList<Task> tasks) {
+        try {
+            File f = new File(DATAPATH);
+            // create a DATAPATH folder if not exist
+            f.getParentFile().mkdirs();
+            FileWriter writer = new FileWriter(f);
+            for (Task t: tasks) {
+                String line;
+                String status = t.isDone ? "1" : "0";
+                if (t instanceof ToDo) {
+                    line = "T | " + status + " | " + t.description;
+                } else if (t instanceof Deadline) {
+                    line = "D | " + status + " | " + t.description + " | " + ((Deadline) t).do_by; // Cast as a Deadline class
+                } else if (t instanceof Event) {
+                    line = "E | " + status + " | " + t.description + " | " + ((Event) t).start_dateTime + " to " + ((Event) t).end_dateTime; // Cast as an Event class
+                } else {
+                    continue;
+                }
+                writer.write(line + System.lineSeparator());
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    // loads the saved ArrayList of Tasks
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        File f = new File(DATAPATH);
+        if (!f.exists()) {
+            return tasks;
+        }
+
+        try {
+            Scanner scanner = new Scanner(f);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(" \\| ");
+                if (parts.length < 3) continue;
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+                Task t;
+                switch (type) {
+                    case "T":
+                        t = new ToDo(description);
+                        break;
+                    case "D":
+                        if (parts.length < 4) continue;
+                        t = new Deadline(description, parts[3]);
+                        break;
+                    case "E":
+                        if (parts.length < 4) continue;
+                        String[] times = parts[3].split(" to ");
+                        if (times.length < 2) continue;
+                        t = new Event(description, times[0], times[1]);
+                        break;
+                    default:
+                        continue;
+                }
+                t.isDone = isDone;
+                tasks.add(t);
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to load tasks: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+
     // String... is a varargs where a value of that type can be passed as many times and the caller gets it as an array
     private static void sugonPrint(String... messages) {
         System.out.println("____________________________________________________________");
-    for (String msg : messages) {
-        System.out.println(msg);
-    }
-    System.out.println("____________________________________________________________");
+        for (String msg : messages) {
+            System.out.println(msg);
+        }
+        System.out.println("____________________________________________________________");
     }
     public static void main(String[] args) {
         String chatName = "Sugon";
@@ -17,7 +97,7 @@ public class Sugon {
         System.out.println(" What can I do for you?");
         System.out.println("____________________________________________________________");
         Scanner s = new Scanner(System.in);
-        ArrayList<Task> list_of_Tasks = new ArrayList<>();
+        ArrayList<Task> list_of_Tasks = loadTasks();
         boolean isRunning = true;
 
         while (isRunning) {
@@ -54,6 +134,7 @@ public class Sugon {
                 }
                 // condition that sets isDone to True or False based on first_word string
                 list_of_Tasks.get(idx).isDone = first_word.equals("mark");
+                saveTasks(list_of_Tasks);
                 System.out.println("____________________________________________________________");
                 System.out.println((first_word.equals("mark") ? "Marked" : "Unmarked") + " task " + (idx + 1) + " as done:");
                 System.out.println(list_of_Tasks.get(idx).toString());
@@ -92,6 +173,7 @@ public class Sugon {
                 }
 
                 list_of_Tasks.add(newTask);
+                saveTasks(list_of_Tasks);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task: ");
                 System.out.println("    " + newTask.toString());
