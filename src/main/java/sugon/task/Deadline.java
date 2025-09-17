@@ -1,9 +1,15 @@
+package sugon.task;
+
 public class Deadline extends Task {
     protected String do_by;
 
     public Deadline(String description, String do_by) {
         super(description); // superclass to call parent's constructor/method/field
         this.do_by = do_by;
+    }
+
+    public String getDoBy() {
+        return do_by;
     }
 
     @Override

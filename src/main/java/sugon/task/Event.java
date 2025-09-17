@@ -1,3 +1,5 @@
+package sugon.task;
+
 public class Event extends Task {
     protected String start_dateTime;
     protected String end_dateTime;
@@ -6,6 +8,14 @@ public class Event extends Task {
         super(description);
         this.start_dateTime = start_dateTime;
         this.end_dateTime = end_dateTime;
+    }
+
+    public String getStartDateTime() {
+        return start_dateTime;
+    }
+
+    public String getEndDateTime() {
+        return end_dateTime;
     }
 
     @Override

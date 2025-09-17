@@ -1,10 +1,17 @@
+package sugon.ui;
+
 import java.util.Scanner;
+
+import sugon.task.Task;
+import sugon.task.Deadline;
+import sugon.task.ToDo;
+import sugon.task.Event;
+
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Sugon {
 
@@ -18,13 +25,13 @@ public class Sugon {
             FileWriter writer = new FileWriter(f);
             for (Task t: tasks) {
                 String line;
-                String status = t.isDone ? "1" : "0";
+                String status = t.isDone() ? "1" : "0";
                 if (t instanceof ToDo) {
-                    line = "T | " + status + " | " + t.description;
+                    line = "T | " + status + " | " + t.getDescription();
                 } else if (t instanceof Deadline) {
-                    line = "D | " + status + " | " + t.description + " | " + ((Deadline) t).do_by; // Cast as a Deadline class
+                    line = "D | " + status + " | " + t.getDescription() + " | " + ((Deadline) t).getDoBy(); // Cast as a Deadline class
                 } else if (t instanceof Event) {
-                    line = "E | " + status + " | " + t.description + " | " + ((Event) t).start_dateTime + " to " + ((Event) t).end_dateTime; // Cast as an Event class
+                    line = "E | " + status + " | " + t.getDescription() + " | " + ((Event) t).getStartDateTime() + " to " + ((Event) t).getStartDateTime(); // Cast as an Event class
                 } else {
                     continue;
                 }
@@ -71,7 +78,7 @@ public class Sugon {
                     default:
                         continue;
                 }
-                t.isDone = isDone;
+                t.setDone(isDone);
                 tasks.add(t);
             }
             scanner.close();
@@ -133,7 +140,7 @@ public class Sugon {
                     break;
                 }
                 // condition that sets isDone to True or False based on first_word string
-                list_of_Tasks.get(idx).isDone = first_word.equals("mark");
+                list_of_Tasks.get(idx).setDone(first_word.equals("mark"));
                 saveTasks(list_of_Tasks);
                 System.out.println("____________________________________________________________");
                 System.out.println((first_word.equals("mark") ? "Marked" : "Unmarked") + " task " + (idx + 1) + " as done:");
@@ -200,6 +207,7 @@ public class Sugon {
                     break;
                 }
                 Task removedTask = list_of_Tasks.remove(idx_to_delete);
+                saveTasks(list_of_Tasks);
                 System.out.println("____________________________________________________________");
                 System.out.println("Noted. I've removed this task:");
                 System.out.println("  " + removedTask.toString());

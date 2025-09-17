@@ -13,9 +13,15 @@ src/main/resources/docs/
 .DS_Store
 *.iml
 bin/
+data/
 
 # storage
 src/main/java/data/*
+manifest.txt
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+
+Sugon.jar
+
+
