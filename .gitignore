@@ -21,6 +21,6 @@ src/main/java/data/*
 text-ui-test/EXPECTED-UNIX.TXT
 
 
-Sugon.jar
+# Sugon.jar
 
-manifest.txt
+# manifest.txt
