@@ -19,3 +19,8 @@ src/main/java/data/*
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+
+
+Sugon.jar
+
+manifest.txt
