@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Parser {
 
@@ -91,6 +92,27 @@ public class Parser {
                 ui.showTaskRemoved(removed, tasks.getTasks().size());
             } catch (Exception e) {
                 ui.showError("Invalid task number.");
+            }
+            break;
+
+        case "find":
+            if (args == null || args.trim().isEmpty()) {
+                ui.showError("Please input a keyword to search.");
+                break;
+            }
+            
+            // create temporary list to hold found tasks
+            ArrayList<Task> filteredList = new ArrayList<>();
+            for (Task task : tasks.getTasks()) {
+                if (task.description.contains(args)) {
+                    filteredList.add(task);
+                }
+            }
+
+            if (filteredList.isEmpty()) {
+                ui.showError("No matching tasks found.");
+            } else {
+                ui.showTaskList(filteredList);
             }
             break;
 

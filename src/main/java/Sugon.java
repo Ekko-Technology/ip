@@ -37,6 +37,7 @@ public class Sugon {
                 ui.showError("Sugon needs a command.");
                 continue;
             }
+            // Split command and arguments to only 2 substrings
             String[] words = line.split(" ", 2);
             String command = words[0].toLowerCase();
             String args = (words.length > 1) ? words[1].trim() : "";
