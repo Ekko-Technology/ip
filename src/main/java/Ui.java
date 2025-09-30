@@ -1,7 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Handles all CLI interactions with the user.
+ * Provides methods to display messages, errors, task lists, and task updates.
+ */
 public class Ui {
-
+    
     public void showHelp() {
     sugonPrint(
         "Available commands:",
@@ -29,6 +33,11 @@ public class Ui {
         System.out.println("____________________________________________________________");
     }
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param errors One or more error messages to display.
+     */
     public void showError(String... errors) {
         StringBuilder sb = new StringBuilder();
         for (String e : errors) {
@@ -45,6 +54,11 @@ public class Ui {
         sugonPrint("Bye. Hope to see you again soon!");
     }
 
+    /**
+     * Displays the full list of tasks.
+     *
+     * @param taskList The list of tasks to display.
+     */
     public void showTaskList(ArrayList<Task> taskList) {
         showLine();
         for (int i = 0; i < taskList.size(); i++) {
@@ -53,6 +67,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message that a task has been added.
+     *
+     * @param task The task that was added.
+     * @param totalTasks The total number of tasks after addition.
+     */
     public void showTaskAdded(Task task, int totalTasks) {
         showLine();
         System.out.println("Got it. I've added this task:");
@@ -62,6 +82,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message that a task has been removed.
+     *
+     * @param task The task that was removed.
+     * @param totalTasks The total number of tasks remaining.
+     */
     public void showTaskRemoved(Task task, int totalTasks) {
         showLine();
         System.out.println("Noted. I've removed this task:");

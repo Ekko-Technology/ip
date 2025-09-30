@@ -2,6 +2,11 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.FileNotFoundException;
 
+/**
+ * Main class for the Sugon task management application.
+ * Handles initialization of UI, storage, and task list,
+ * and contains the main program loop for processing user commands.
+ */
 public class Sugon {
     private static final String filepath = "data/sugon.txt";
 
@@ -9,7 +14,11 @@ public class Sugon {
     private Storage storage;
     private ArrayList<Task> list_of_Tasks;
 
-    // Constructor for loading UI class, storage class for loading saved files
+    /**
+     * Constructs a Sugon instance with the specified file path for storage.
+     *
+     * @param filePath The path to the file where tasks are saved/loaded.
+     */
     public Sugon(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -21,7 +30,9 @@ public class Sugon {
         }
     }   
 
-    // The main program loop
+    /**
+     * Runs the main program loop, processing user input and executing commands.
+     */
     public void run() {
         ui.showWelcome();
         ui.showHelp();
@@ -48,7 +59,7 @@ public class Sugon {
     }
 
 
-    // Proper JVM entry point
+    // Main entry point
     public static void main(String[] args) {
         Sugon app = new Sugon(filepath);
         app.run();

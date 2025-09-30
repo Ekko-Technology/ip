@@ -1,8 +1,21 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Handles list of logic commands for each task within Tasklist class.
+ * Provides commands to bye, list, mark, unmark, todo, deadline, event, delete, find and help.
+ */
 public class Parser {
-
+    /**
+     * Executes a given command with arguments.
+     *
+     * @param command The command keyword (e.g., "todo", "mark").
+     * @param args The arguments following the command (task description, index, etc.).
+     * @param tasks The Tasklist object containing the tasks.
+     * @param ui The Ui object for displaying messages to the user.
+     * @param storage The Storage object for saving tasks to file.
+     * @return true if the program should continue running, false if the command is "bye".
+     */
     public static boolean executeCommand(String command, String args, Tasklist tasks, Ui ui, Storage storage) {
         switch (command) {
         case "bye":
@@ -100,7 +113,7 @@ public class Parser {
                 ui.showError("Please input a keyword to search.");
                 break;
             }
-            
+
             // create temporary list to hold found tasks
             ArrayList<Task> filteredList = new ArrayList<>();
             for (Task task : tasks.getTasks()) {
