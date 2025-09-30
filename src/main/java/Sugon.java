@@ -1,217 +1,55 @@
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Sugon {
+    private static final String filepath = "data/sugon.txt";
 
-    private static String DATAPATH = "data/Sugon.txt";
+    private Ui ui;
+    private Storage storage;
+    private ArrayList<Task> list_of_Tasks;
 
-    private static void saveTasks(ArrayList<Task> tasks) {
+    // Constructor for loading UI class, storage class for loading saved files
+    public Sugon(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
         try {
-            File f = new File(DATAPATH);
-            // create a DATAPATH folder if not exist
-            f.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(f);
-            for (Task t: tasks) {
-                String line;
-                String status = t.isDone ? "1" : "0";
-                if (t instanceof ToDo) {
-                    line = "T | " + status + " | " + t.description;
-                } else if (t instanceof Deadline) {
-                    line = "D | " + status + " | " + t.description + " | " + ((Deadline) t).do_by; // Cast as a Deadline class
-                } else if (t instanceof Event) {
-                    line = "E | " + status + " | " + t.description + " | " + ((Event) t).start_dateTime + " to " + ((Event) t).end_dateTime; // Cast as an Event class
-                } else {
-                    continue;
-                }
-                writer.write(line + System.lineSeparator());
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Something went wrong: " + e.getMessage());
-        }
-    }
-
-    // loads the saved ArrayList of Tasks
-    private static ArrayList<Task> loadTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        File f = new File(DATAPATH);
-        if (!f.exists()) {
-            return tasks;
-        }
-
-        try {
-            Scanner scanner = new Scanner(f);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(" \\| ");
-                if (parts.length < 3) continue;
-                String type = parts[0];
-                boolean isDone = parts[1].equals("1");
-                String description = parts[2];
-                Task t;
-                switch (type) {
-                    case "T":
-                        t = new ToDo(description);
-                        break;
-                    case "D":
-                        if (parts.length < 4) continue;
-                        t = new Deadline(description, parts[3]);
-                        break;
-                    case "E":
-                        if (parts.length < 4) continue;
-                        String[] times = parts[3].split(" to ");
-                        if (times.length < 2) continue;
-                        t = new Event(description, times[0], times[1]);
-                        break;
-                    default:
-                        continue;
-                }
-                t.isDone = isDone;
-                tasks.add(t);
-            }
-            scanner.close();
+            list_of_Tasks = storage.loadTasks();
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to load tasks: " + e.getMessage());
+            ui.showError("unable to find filepath to load tasks");
+            list_of_Tasks = new ArrayList<>();
         }
-        return tasks;
-    }
+    }   
 
-
-    // String... is a varargs where a value of that type can be passed as many times and the caller gets it as an array
-    private static void sugonPrint(String... messages) {
-        System.out.println("____________________________________________________________");
-        for (String msg : messages) {
-            System.out.println(msg);
-        }
-        System.out.println("____________________________________________________________");
-    }
-    public static void main(String[] args) {
-        String chatName = "Sugon";
-        System.out.println("____________________________________________________________");
-        System.out.println(" Hello! I'm " + chatName);
-        System.out.println(" What can I do for you?");
-        System.out.println("____________________________________________________________");
-        Scanner s = new Scanner(System.in);
-        ArrayList<Task> list_of_Tasks = loadTasks();
+    // The main program loop
+    public void run() {
+        ui.showWelcome();
+        ui.showHelp();
+        Scanner scanner = new Scanner(System.in);
         boolean isRunning = true;
 
+        Tasklist tasklist = new Tasklist();
+        tasklist.setTasks(list_of_Tasks); // Add a setter in Tasklist if needed
+
         while (isRunning) {
-            String line = s.nextLine().trim();
-            String[] words = line.split(" ", 2);
-            String first_word = words[0].toLowerCase();
-
-            switch (first_word) {
-            case "":
-                sugonPrint("Sugon needs a command.");
-                break;
-            case "bye":
-                isRunning = false;
-                sugonPrint("Bye. Hope to see you again soon!");
-                break;
-            case "list":
-                System.out.println("____________________________________________________________");
-                for (int i = 0; i < list_of_Tasks.size(); i++){
-                    Task t = list_of_Tasks.get(i);
-                    System.out.println((i + 1) + "." + t.toString()); // Polymorphism, where child class able to perform same method call as parent
-                }
-                System.out.println("____________________________________________________________");
-                break;
-            case "mark":
-            case "unmark":
-                if (words.length < 2) {
-                    sugonPrint("Sugon needs your task number to " + first_word + ".");
-                    break;
-                }
-                int idx = Integer.parseInt(line.split(" ")[1]) - 1;
-                if (idx < 0 || idx >= list_of_Tasks.size()) {
-                    sugonPrint("Invalid task number.");
-                    break;
-                }
-                // condition that sets isDone to True or False based on first_word string
-                list_of_Tasks.get(idx).isDone = first_word.equals("mark");
-                saveTasks(list_of_Tasks);
-                System.out.println("____________________________________________________________");
-                System.out.println((first_word.equals("mark") ? "Marked" : "Unmarked") + " task " + (idx + 1) + " as done:");
-                System.out.println(list_of_Tasks.get(idx).toString());
-                System.out.println("____________________________________________________________");
-                break;
-
-            case "todo":
-            case "deadline":
-            case "event":
-                if (words.length < 2 || words[1].trim().isEmpty()) {
-                    sugonPrint("Sugon demands a description after your silly command");
-                    break;
-                }
-
-                String actual_task = words[1].trim();
-                Task newTask;
-                // As ToDo, Event and Deadline are childs of Task, we can add new instances into the Task Array created
-                try {
-                    if (first_word.equals("todo")) {
-                        newTask = new ToDo(actual_task);
-                    } else if (first_word.equals("deadline")) {
-                        String[] parts = actual_task.split("/", 2);
-                        actual_task = parts[0].trim();
-                        String deadline_date = parts[1].replaceFirst("by", "").trim();
-                        newTask = new Deadline(actual_task, deadline_date);
-                    } else {
-                        String[] parts = actual_task.split("/", 3);
-                        actual_task = parts[0].trim();
-                        String startTime = parts[1].replaceFirst("from", "").trim();
-                        String endTime = parts[2].replaceFirst("to", "").trim();
-                        newTask = new Event(actual_task, startTime, endTime);
-                    } 
-                } catch (Exception e) {
-                    sugonPrint("Invalid format for " + first_word + ". Sugon suggests you double check your input formatting properly.");
-                    continue;
-                }
-
-                list_of_Tasks.add(newTask);
-                saveTasks(list_of_Tasks);
-                System.out.println("____________________________________________________________");
-                System.out.println("Got it. I've added this task: ");
-                System.out.println("    " + newTask.toString());
-                System.out.println("Now you have " + list_of_Tasks.size() +
-                        (list_of_Tasks.size() == 1 ? " task" : " tasks") + " in the list.");
-                System.out.println("____________________________________________________________");
-                break;
-
-            case "delete":
-                if (words.length < 2) {
-                    sugonPrint("Sugon needs your task number to delete");
-                    break;
-                }
-                int idx_to_delete;
-                try {
-                    idx_to_delete = Integer.parseInt(words[1].trim()) - 1;
-             } catch (NumberFormatException e) {
-                    sugonPrint("Sugon needs a valid task number to delete.");
-                    break;
-                }
-
-                if (idx_to_delete < 0 || idx_to_delete >= list_of_Tasks.size()) {
-                    sugonPrint("Invalid task number.");
-                    break;
-                }
-                Task removedTask = list_of_Tasks.remove(idx_to_delete);
-                System.out.println("____________________________________________________________");
-                System.out.println("Noted. I've removed this task:");
-                System.out.println("  " + removedTask.toString());
-                System.out.println("Now you have " + list_of_Tasks.size() +
-                        (list_of_Tasks.size() == 1 ? " task" : " tasks") + " in the list.");
-                System.out.println("____________________________________________________________");
-                break;   
-
-            default:
-                sugonPrint("Sorry your command is beyond Sugon's Dictionary");
-                break;
+            String line = scanner.nextLine().trim();
+            if (line.isEmpty()) {
+                ui.showError("Sugon needs a command.");
+                continue;
             }
+            String[] words = line.split(" ", 2);
+            String command = words[0].toLowerCase();
+            String args = (words.length > 1) ? words[1].trim() : "";
+
+            isRunning = Parser.executeCommand(command, args, tasklist, ui, storage);
         }
+        scanner.close();
+    }
+
+
+    // Proper JVM entry point
+    public static void main(String[] args) {
+        Sugon app = new Sugon(filepath);
+        app.run();
     }
 }
