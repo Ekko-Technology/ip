@@ -1,41 +1,88 @@
-# Duke User Guide
+# Sugon User Guide
 
-// Update the title above to match the actual product name
+Welcome to **Sugon**, your friendly personal task management chatbot! Sugon helps you keep track of your tasks, deadlines, and events with simple text commands.
 
-// Product screenshot goes here
+---
 
-// Product intro goes here
+## Introduction
+Sugon is a Java-based chatbot designed to help you organize your tasks efficiently. With Sugon, you can:
 
-## Adding deadlines
+- Add, view, find and delete tasks.
+- Track deadlines and events with start/end times.
+- Mark tasks as done or not done.
+- Save your task list between sessions automatically.
 
-// Describe the action and its outcome.
+---
 
-// Give examples of usage
+## Getting Started 
+ 
+**Creating and running JAR file**
+### Navigate to the Project Folder:
+Run `cd ip`
 
-Example: `keyword (optional arguments)`
+### Compile the Project and save class files in bin:
+Run `javac -d bin src/*.java`
 
-// A description of the expected outcome goes here
+### Create JAR file
+Run `jar cfm Sugon.jar manifest.txt -C bin .` to create and output new JAR filename 
 
-```
-expected output
-```
+### Run Sugon.Jar:
+Run `java -jar Sugon.jar`  
+Sugon will automatically load any saved tasks from `data/sugon.txt`.
 
-## Feature ABC
+---
 
-// Feature details
+## Features
 
+### Add Tasks
 
-## Feature XYZ
+- **ToDo**: A simple task without a date/time.  
+  Run `todo <description>`
 
-// Feature details
+- **Deadline**: A task with a due date.  
+  Run `deadline <description> /by <YYYY-MM-DD>`
 
+- **Event**: A task with start and end times.  
+  Run `event <description> /from <start-time> /to <end-time>`
 
-## Convert to .jar file in vscode
+---
 
-Run ``javac -d bin src/main/java/*.java`` to put all compiled .class files into a 'bin' folder.
+### View Tasks
+List all tasks: `list`
 
-Create a **manifest.txt** file to indicate the primary file which contains main e.g. ``Main-Class: Sugon``
+---
 
-Run ``jar cfm Sugon.jar manifest.txt -C bin .`` to create new jar, output file name and use manifest.txt file
+### Mark / Unmark Tasks
 
-Run ``java -jar Sugon.jar`` to run the jar file created
+- Mark as done: `mark <task-number>`  
+- Mark as not done: `unmark <task-number>`
+
+---
+
+### Delete Tasks
+Remove a task: `delete <task-number>`
+
+---
+
+### Exit Sugon
+Exit the application: `bye`
+
+---
+
+## Saving and Loading Tasks
+- Sugon automatically saves all tasks in `data/sugon.txt`.  
+- When Sugon is restarted, it loads previously saved tasks, so you never lose your data.
+
+---
+
+## Command Summary
+
+- `todo Buy groceries` – Add a ToDo task  
+- `deadline Submit report /by 2025-10-05` – Add a deadline task  
+- `event Meeting /from 14:00 /to 15:00` – Add an event  
+- `list` – List all tasks  
+- `mark 2` – Mark row 2 task as done  
+- `unmark 2` – Unmark row 2 task  
+- `delete 3` – Delete row 3 task  
+- `bye` – Exit Sugon
+- `find book` - Find Task with substring 'book'
