@@ -57,14 +57,14 @@ public class Parser {
                 ui.showError("Description cannot be empty.");
                 break;
             }
-            Task t = new ToDo(args);
-            tasks.addTask(t);
+            Task toDo_Task = new ToDo(args);
+            tasks.addTask(toDo_Task);
             try {
                 storage.saveTasks(tasks.getTasks());
             } catch (IOException e) {
                 ui.showError("Failed to save tasks.");
             }
-            ui.showTaskAdded(t, tasks.getTasks().size());
+            ui.showTaskAdded(toDo_Task, tasks.getTasks().size());
             break;
 
         case "deadline":
@@ -72,10 +72,10 @@ public class Parser {
                 String[] dParts = args.split("/by", 2);
                 String desc = dParts[0].trim();
                 String deadlineDate = dParts[1].trim();
-                Task d = new Deadline(desc, deadlineDate);
-                tasks.addTask(d);
+                Task deadline_Task = new Deadline(desc, deadlineDate);
+                tasks.addTask(deadline_Task);
                 storage.saveTasks(tasks.getTasks());
-                ui.showTaskAdded(d, tasks.getTasks().size());
+                ui.showTaskAdded(deadline_Task, tasks.getTasks().size());
             } catch (Exception e) {
                 ui.showError("Invalid deadline format. Use: deadline <desc> /by <date>");
             }
@@ -88,10 +88,10 @@ public class Parser {
                 String[] times = eParts[1].split("/to", 2);
                 String start = times[0].trim();
                 String end = times[1].trim();
-                Task ev = new Event(desc, start, end);
-                tasks.addTask(ev);
+                Task event_Task = new Event(desc, start, end);
+                tasks.addTask(event_Task);
                 storage.saveTasks(tasks.getTasks());
-                ui.showTaskAdded(ev, tasks.getTasks().size());
+                ui.showTaskAdded(event_Task, tasks.getTasks().size());
             } catch (Exception e) {
                 ui.showError("Invalid event format. Use: event <desc> /from <start> /to <end>");
             }

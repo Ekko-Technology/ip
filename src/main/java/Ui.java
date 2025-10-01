@@ -40,8 +40,8 @@ public class Ui {
      */
     public void showError(String... errors) {
         StringBuilder sb = new StringBuilder();
-        for (String e : errors) {
-            sb.append(e).append(" ");
+        for (String error : errors) {
+            sb.append(error).append(" ");
         }
         sugonPrint("Error: " + sb.toString().trim());
     }

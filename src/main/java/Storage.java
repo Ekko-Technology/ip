@@ -24,12 +24,12 @@ public class Storage {
      */
     public ArrayList<Task> loadTasks() throws FileNotFoundException {
         ArrayList<Task> tasks = new ArrayList<>();
-        File f = new File(filepath);
-        if (!f.exists()) {
+        File newFile = new File(filepath);
+        if (!newFile.exists()) {
             return tasks;
         }
 
-        Scanner scanner = new Scanner(f);
+        Scanner scanner = new Scanner(newFile);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             String[] parts = line.split(" \\| ");
@@ -37,26 +37,26 @@ public class Storage {
             String type = parts[0];
             boolean isDone = parts[1].equals("1");
             String description = parts[2];
-            Task t;
+            Task newTask;
             switch (type) {
                 case "T":
-                    t = new ToDo(description);
+                    newTask = new ToDo(description);
                     break;
                 case "D":
                     if (parts.length < 4) continue;
-                    t = new Deadline(description, parts[3]);
+                    newTask = new Deadline(description, parts[3]);
                     break;
                 case "E":
                     if (parts.length < 4) continue;
                     String[] times = parts[3].split(" to ");
                     if (times.length < 2) continue;
-                    t = new Event(description, times[0], times[1]);
+                    newTask = new Event(description, times[0], times[1]);
                     break;
                 default:
                     continue;
             }
-            t.isDone = isDone;
-            tasks.add(t);
+            newTask.isDone = isDone;
+            tasks.add(newTask);
         }
         scanner.close();
         return tasks;
@@ -74,15 +74,15 @@ public class Storage {
         // Create file if not exist
         saveFilePath.getParentFile().mkdirs();
         FileWriter writer = new FileWriter(saveFilePath);
-        for (Task t: tasks) {
+        for (Task currentTask: tasks) {
             String line;
-            String status = t.isDone ? "1" : "0";
-            if (t instanceof ToDo) {
-                line = "T | " + status + " | " + t.description;
-            } else if (t instanceof Deadline) {
-                line = "D | " + status + " | " + t.description + " | " + ((Deadline) t).do_by; // Cast as a Deadline class
-            } else if (t instanceof Event) {
-                line = "E | " + status + " | " + t.description + " | " + ((Event) t).start_dateTime + " to " + ((Event) t).end_dateTime; // Cast as an Event class
+            String status = currentTask.isDone ? "1" : "0";
+            if (currentTask instanceof ToDo) {
+                line = "T | " + status + " | " + currentTask.description;
+            } else if (currentTask instanceof Deadline) {
+                line = "D | " + status + " | " + currentTask.description + " | " + ((Deadline) currentTask).do_by; // Cast as a Deadline class
+            } else if (currentTask instanceof Event) {
+                line = "E | " + status + " | " + currentTask.description + " | " + ((Event) currentTask).start_dateTime + " to " + ((Event) currentTask).end_dateTime; // Cast as an Event class
             } else {
                 continue;
             }
