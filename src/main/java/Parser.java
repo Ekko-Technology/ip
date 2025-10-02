@@ -70,6 +70,10 @@ public class Parser {
         case "deadline":
             try {
                 String[] dParts = args.split("/by", 2);
+                if (dParts.length < 2 || dParts[0].trim().isEmpty() || dParts[1].trim().isEmpty()) {
+                    ui.showError("Invalid deadline format. Use: deadline <desc> /by <date>");
+                    break;
+                }
                 String desc = dParts[0].trim();
                 String deadlineDate = dParts[1].trim();
                 Task deadline_Task = new Deadline(desc, deadlineDate);
@@ -83,9 +87,17 @@ public class Parser {
 
         case "event":
             try {
-                String[] eParts = args.split("/from", 2);
+                String[] eParts = args.split("/from", 2); 
+                if (eParts.length < 2 || eParts[0].trim().isEmpty() || eParts[1].trim().isEmpty()) {
+                    ui.showError("Invalid event format. Use: event <desc> /from <start> /to <end>");
+                    break;
+                }
                 String desc = eParts[0].trim();
                 String[] times = eParts[1].split("/to", 2);
+                if (times.length < 2 || times[0].trim().isEmpty() || times[1].trim().isEmpty()) {
+                    ui.showError("Invalid event format. Use: event <desc> /from <start> /to <end>");
+                    break;
+                }
                 String start = times[0].trim();
                 String end = times[1].trim();
                 Task event_Task = new Event(desc, start, end);

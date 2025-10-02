@@ -39,21 +39,21 @@ public class Storage {
             String description = parts[2];
             Task newTask;
             switch (type) {
-                case "T":
-                    newTask = new ToDo(description);
-                    break;
-                case "D":
-                    if (parts.length < 4) continue;
-                    newTask = new Deadline(description, parts[3]);
-                    break;
-                case "E":
-                    if (parts.length < 4) continue;
-                    String[] times = parts[3].split(" to ");
-                    if (times.length < 2) continue;
-                    newTask = new Event(description, times[0], times[1]);
-                    break;
-                default:
-                    continue;
+            case "T":
+                newTask = new ToDo(description);
+                break;
+            case "D":
+                if (parts.length < 4) continue;
+                newTask = new Deadline(description, parts[3]);
+                break;
+            case "E":
+                if (parts.length < 4) continue;
+                String[] times = parts[3].split(" to ");
+                if (times.length < 2) continue;
+                newTask = new Event(description, times[0], times[1]);
+                break;
+            default:
+                continue;
             }
             newTask.isDone = isDone;
             tasks.add(newTask);

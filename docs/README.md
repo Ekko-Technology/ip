@@ -21,7 +21,7 @@ Sugon is a Java-based chatbot designed to help you organize your tasks efficient
 Run `cd ip`
 
 ### Compile the Project and save class files in bin:
-Run `javac -d bin src/*.java`
+Run `javac -d bin src/main/java/*.java`
 
 ### Create JAR file
 Run `jar cfm Sugon.jar manifest.txt -C bin .` to create and output new JAR filename 
